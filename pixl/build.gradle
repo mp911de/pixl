@@ -1,0 +1,33 @@
+apply plugin: 'spring-boot'
+
+jar {
+    baseName = 'pixl'
+}
+
+dependencies {
+    compile project(':api')
+    compile project(':output/pixelpusher')
+    compile project(':output/swing')
+    compile project(':plugins/default-applications')
+
+    compile('org.springframework.boot:spring-boot-starter-social-twitter')
+    compile('org.springframework.boot:spring-boot-starter-web')
+    compile('com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.6.4')
+    compile('org.apache.commons:commons-lang3:3.4')
+    compile('org.apache.httpcomponents:httpclient:4.5')
+    compile('org.apache.httpcomponents:httpasyncclient:4.1')
+    compile("org.springframework.boot:spring-boot-configuration-processor")
+
+    testCompile('org.springframework.boot:spring-boot-starter-test')
+}
+
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+    }
+}
+
+compileJava.dependsOn(processResources)

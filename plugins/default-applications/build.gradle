@@ -1,0 +1,6 @@
+dependencies {
+    compile project(':api')
+    compile("org.springframework:spring-context:${springVersion}")
+    compile("org.springframework:spring-web:${springVersion}")
+    compile("javax.inject:javax.inject:1")
+}

@@ -1,0 +1,5 @@
+dependencies {
+    compile('com.google.guava:guava:19.0')
+    compile('com.javaslang:javaslang:2.0.0-RC2')
+    compile('io.reactivex:rxjava:1.1.0')
+}

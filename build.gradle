@@ -1,0 +1,46 @@
+group 'biz.paluch.pixl'
+
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'idea'
+
+allprojects {
+    version = '1.0'
+
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
+
+    repositories {
+        mavenCentral()
+    }
+
+}
+
+subprojects {
+    apply plugin: 'java'
+
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        compile('org.slf4j:slf4j-api:1.7.13')
+        compile('org.projectlombok:lombok:1.16.6')
+        testCompile('org.easytesting:fest-reflect:1.4.1')
+        testCompile("junit:junit:4.12")
+        testCompile("org.assertj:assertj-core:3.2.0")
+    }
+}
+
+eclipse {
+    classpath {
+        containers.remove('org.eclipse.jdt.launching.JRE_CONTAINER')
+        containers 'org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8'
+    }
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '2.9'
+}
+
+defaultTasks 'build'

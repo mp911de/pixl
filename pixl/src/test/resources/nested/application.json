@@ -1,0 +1,10 @@
+{
+  "dummy": {
+    "frames": [
+      {
+        "type": "text",
+        "duration": "PT10S"
+      }
+    ]
+  }
+}

@@ -1,0 +1,9 @@
+rootProject.name = 'pixl-parent'
+
+include 'api'
+include 'output/swing'
+include 'output/pixelpusher'
+include 'plugins/default-applications'
+include 'plugins/github'
+include 'pixl'
+

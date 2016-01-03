@@ -1,0 +1,27 @@
+{
+  "time": {
+    "frames": [
+      {
+        "type": "text",
+        "formatPattern": {
+          "de": "hh:mm:ss"
+        }
+      }
+    ]
+  },
+  "minute": {
+    "frames": [
+      {
+        "type": "progress",
+        "formatPattern": "##"
+      }
+    ]
+  },
+  "weather": {
+    "frames": [
+      {
+        "type": "metric"
+      }
+    ]
+  }
+}

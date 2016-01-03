@@ -1,0 +1,20 @@
+{
+  "items": [
+    {
+      "application": "time",
+      "duration": "PT10S"
+    },
+    {
+      "application": "minute",
+      "duration": "PT10S"
+    },
+    {
+      "application": "weather",
+      "duration": "PT10S",
+      "configuration": {
+        "location": "Weinheim,de",
+        "unit": "C"
+      }
+    }
+  ]
+}
