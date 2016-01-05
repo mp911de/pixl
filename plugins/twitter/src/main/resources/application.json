@@ -1,0 +1,10 @@
+{
+  "twitter": {
+    "frames": [
+      {
+        "icon": "twitter.png",
+        "type": "text"
+      }
+    ]
+  }
+}
