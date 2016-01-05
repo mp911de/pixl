@@ -38,6 +38,7 @@ public class ApplicationRegistry extends ConfigurationSupport implements Applica
     public static final String KEY_DATATYPE = "datatype";
     public static final String KEY_DURATION = "duration";
     public static final String KEY_FORMAT_PATTERN = "formatPattern";
+    public static final String KEY_GET_VALUE_ON_REPAINT = "getValueOnRepaint";
 
     private Map<String, ApplicationFrames> applicationFrames = Maps.newHashMap();
     private Map<String, Application> applications = Maps.newHashMap();
@@ -157,6 +158,10 @@ public class ApplicationRegistry extends ConfigurationSupport implements Applica
 
         if (frameData.containsKey(KEY_ACTIVE)) {
             frame.setActive((Boolean) frameData.get(KEY_ACTIVE));
+        }
+
+        if (frameData.containsKey(KEY_GET_VALUE_ON_REPAINT)) {
+            frame.setGetValueOnRepaint((Boolean) frameData.get(KEY_GET_VALUE_ON_REPAINT));
         }
 
         if (frameData.containsKey(KEY_DURATION)) {

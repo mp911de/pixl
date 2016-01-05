@@ -1,5 +1,7 @@
 package pixl.control;
 
+import com.google.common.io.Resources;
+import org.apache.commons.lang3.StringUtils;
 import pixl.api.application.Application;
 import pixl.api.application.data.IconValue;
 import pixl.api.application.data.Progress;
@@ -7,7 +9,9 @@ import pixl.api.application.data.Value;
 import pixl.application.Frame;
 import pixl.application.FrameType;
 
+import javax.imageio.ImageIO;
 import java.awt.*;
+import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -73,10 +77,15 @@ public class FrameController {
                     .renderProgress(progress.getValue(), progress.getMin(), progress.getMax(), availableWidth);
         }
 
-        if(value instanceof IconValue) {
+        if (value instanceof IconValue) {
             iconImage = ((IconValue) value).getIcon();
+        } else if (StringUtils.isNotBlank(frame.getIcon())) {
+            try {
+                iconImage = ImageIO.read(Resources.getResource(frame.getIcon()));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
-
     }
 
     private String getText(Frame frame, Locale locale, Value<?> value) {

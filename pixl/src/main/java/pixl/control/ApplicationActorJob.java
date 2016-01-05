@@ -60,6 +60,7 @@ public class ApplicationActorJob {
     };
 
     private volatile boolean refresh;
+    private volatile boolean frameChangeRequested;
 
     private long playlistItemSince;
     private long frameSince;
@@ -83,6 +84,10 @@ public class ApplicationActorJob {
 
         valueRenderer = new ValueRenderer(bitmapFont);
         this.frameSelector = new FrameSelector(playlist, applicationRegistry);
+
+        device.triggerButton().subscribe(state -> {
+            frameChangeRequested = true;
+        });
     }
 
     public void act() {
@@ -100,11 +105,17 @@ public class ApplicationActorJob {
 
         boolean switchFrame = false;
 
+
         if (playlistItemSince != 0 && frameSince != 0 && transitionSince == 0 && !frameController
                 .isInFrameAnimation()) {
             long applicationDuration = now() - playlistItemSince;
             long frameDuration = now() - frameSince;
             switchFrame = frameSelector.frameSwitchNeeded(applicationDuration, frameDuration);
+        }
+
+        if(frameChangeRequested){
+            frameChangeRequested = false;
+            switchFrame = true;
         }
 
         if (switchFrame) {

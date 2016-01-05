@@ -97,6 +97,10 @@ public class SwingDisplay {
         return panel;
     }
 
+    public JButton getBtnTrigger() {
+        return btnTrigger;
+    }
+
     public void setImage(Image image) {
         this.image = image;
         panel.repaint();
@@ -153,6 +157,7 @@ public class SwingDisplay {
         gbc.anchor = GridBagConstraints.WEST;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         panel1.add(cboScreenDimension, gbc);
+        btnTrigger = new JButton();
         btnTrigger.setText("Trigger");
         gbc = new GridBagConstraints();
         gbc.gridx = 1;

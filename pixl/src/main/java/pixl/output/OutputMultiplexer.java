@@ -1,7 +1,6 @@
 package pixl.output;
 
 import com.google.common.collect.Lists;
-import com.sun.org.apache.xpath.internal.operations.Bool;
 import javaslang.collection.Stream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,6 +14,7 @@ import pixl.api.delivery.Startable;
 import pixl.api.delivery.Stoppable;
 import pixl.api.plugin.Plugin;
 import rx.Observable;
+import rx.Subscriber;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -44,8 +44,31 @@ public class OutputMultiplexer implements Device, ApplicationContextAware {
     }
 
     @Override
-    public Observable<Bool> triggerButton() {
-        return null;
+    public Observable<Boolean> triggerButton() {
+
+        Map<String, Plugin> beans = applicationContext.getBeansOfType(Plugin.class);
+        Observable.OnSubscribe<Boolean> onSubscribe = new Observable.OnSubscribe<Boolean>() {
+
+            @Override
+            public void call(Subscriber<? super Boolean> subscriber) {
+                subscriber.onStart();
+                Stream.ofAll(devices).forEach(device -> {
+
+                            Observable<Boolean> deviceObservable = device.triggerButton();
+                            if (deviceObservable != null) {
+
+                                deviceObservable.subscribe(state -> {
+                                    subscriber.onNext(state);
+                                });
+                            }
+                        }
+                );
+
+
+            }
+        };
+
+        return Observable.create(onSubscribe);
     }
 
     @Override
@@ -56,7 +79,8 @@ public class OutputMultiplexer implements Device, ApplicationContextAware {
 
         Map<String, Plugin> beans = applicationContext.getBeansOfType(Plugin.class);
 
-        Stream.ofAll(beans.values()).filter(plugin -> plugin instanceof HasDevices).map(plugin -> (HasDevices) plugin)
+        Stream.ofAll(beans.values()).filter(plugin -> plugin instanceof HasDevices)
+                .map(plugin -> (HasDevices) plugin)
                 .forEach(
                         plugin ->
                         {
@@ -70,14 +94,16 @@ public class OutputMultiplexer implements Device, ApplicationContextAware {
     @PostConstruct
     public void start() {
         log.info("Starting devices");
-        Stream.ofAll(devices).filter(device -> device instanceof Startable).map(device -> (Startable) device).forEach(
-                Startable::start);
+        Stream.ofAll(devices).filter(device -> device instanceof Startable).map(device -> (Startable) device)
+                .forEach(
+                        Startable::start);
     }
 
     @PreDestroy
     public void stop() {
         log.info("Stopping devices");
-        Stream.ofAll(devices).filter(device -> device instanceof Stoppable).map(device -> (Stoppable) device).forEach(
-                Stoppable::stop);
+        Stream.ofAll(devices).filter(device -> device instanceof Stoppable).map(device -> (Stoppable) device)
+                .forEach(
+                        Stoppable::stop);
     }
 }

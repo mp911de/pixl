@@ -16,6 +16,6 @@ public class Frame {
     private Datatype datatype;
     private Duration duration;
     private boolean active = true;
-    private boolean getValueOnRepaint = true;
+    private boolean getValueOnRepaint = false;
     private Localized formatPattern;
 }

@@ -4,8 +4,9 @@
       {
         "type": "text",
         "formatPattern": {
-          "de": "hh:mm:ss"
-        }
+          "de": "HH:mm:ss"
+        },
+        "getValueOnRepaint":true
       }
     ]
   },
@@ -13,7 +14,8 @@
     "frames": [
       {
         "type": "progress",
-        "formatPattern": "##"
+        "formatPattern": "##",
+        "getValueOnRepaint":true
       }
     ]
   },

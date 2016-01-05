@@ -30,6 +30,6 @@ public interface Device {
      *
      * @return
      */
-    Observable<Bool> triggerButton();
+    Observable<Boolean> triggerButton();
 
 }

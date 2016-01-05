@@ -5,6 +5,9 @@ import pixl.api.delivery.Startable;
 import pixl.api.delivery.Stoppable;
 import com.sun.org.apache.xpath.internal.operations.Bool;
 import rx.Observable;
+import rx.Subscriber;
+import rx.subjects.PublishSubject;
+import rx.subjects.Subject;
 
 import javax.sound.sampled.AudioInputStream;
 import javax.swing.*;
@@ -19,6 +22,7 @@ public class SwingDesktopDevice implements Device, Startable, Stoppable {
 
     private JFrame frame;
     private SwingDisplay swingDisplay = new SwingDisplay();
+    private Subject<Boolean, Boolean> subject = PublishSubject.create();
 
     @Override
     public void pushImage(Image image) {
@@ -31,8 +35,8 @@ public class SwingDesktopDevice implements Device, Startable, Stoppable {
     }
 
     @Override
-    public Observable<Bool> triggerButton() {
-        return null;
+    public Observable<Boolean> triggerButton() {
+        return subject;
     }
 
     @Override
@@ -50,6 +54,8 @@ public class SwingDesktopDevice implements Device, Startable, Stoppable {
 
         int x = (int) ((screenSize.getWidth() / 2) - (frame.getSize().getWidth() / 2));
         int y = (int) ((screenSize.getHeight() / 2) - (frame.getSize().getHeight() / 2));
+
+        swingDisplay.getBtnTrigger().addActionListener(e -> subject.onNext(true));
 
         frame.setLocation(x, y);
         frame.add(swingDisplay.getPanel());
