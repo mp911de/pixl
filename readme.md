@@ -14,6 +14,16 @@ Here are some samples created the internal debug UI (Swing GUI)
 
 ![docs/weather.png](docs/weather.png)
 
+And some samples using a LED Matrix panel (RaspberryPI, Pixelpusher)
+
+![docs/gmail-matrix.jpg](docs/gmail-matrix.jpg)
+
+![docs/time-matrix.png](docs/time-matrix.png)
+
+![docs/twitter-matrix.png](docs/twitter-matrix.png)
+
+![docs/wather-matrix.png](docs/wather-matrix.png)
+
 
 How pixl works
 -------------
