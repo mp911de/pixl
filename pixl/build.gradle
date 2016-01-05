@@ -9,6 +9,8 @@ dependencies {
     compile project(':output/pixelpusher')
     compile project(':output/swing')
     compile project(':plugins/default-applications')
+    compile project(':plugins/google-mail')
+    compile project(':plugins/twitter')
 
     compile('org.springframework.boot:spring-boot-starter-social-twitter')
     compile('org.springframework.boot:spring-boot-starter-web')

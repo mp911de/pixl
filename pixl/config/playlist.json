@@ -5,6 +5,17 @@
       "duration": "PT10S"
     },
     {
+      "application": "twitter",
+      "duration": "PT10S"
+    },
+    {
+      "application": "google-mail",
+      "duration": "PT10S",
+      "configuration": {
+        "secret.json": "config/gmail.json"
+      }
+    },
+    {
       "application": "minute",
       "duration": "PT10S"
     },

@@ -5,5 +5,7 @@ include 'output/swing'
 include 'output/pixelpusher'
 include 'plugins/default-applications'
 include 'plugins/github'
+include 'plugins/google-mail'
+include 'plugins/twitter'
 include 'pixl'
 
