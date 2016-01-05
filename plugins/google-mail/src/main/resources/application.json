@@ -1,0 +1,16 @@
+{
+  "google-mail": {
+    "frames": [
+      {
+        "icon": "gmail.gif",
+        "type": "text",
+        "suffix": {
+          "de": " NEU"
+        },
+        "formatPattern": {
+          "de": "#"
+        }
+      }
+    ]
+  }
+}
