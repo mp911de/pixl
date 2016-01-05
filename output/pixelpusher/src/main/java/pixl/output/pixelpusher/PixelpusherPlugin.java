@@ -108,7 +108,24 @@ public class PixelpusherPlugin implements Plugin, HasDevices {
                 for (int y = 0; y < Math.min(strips.size(), image.getHeight(null)); y++) {
                     Strip strip = strips.get(y);
                     for (int x = 0; x < Math.min(strip.getLength(), image.getWidth(null)); x++) {
-                        strip.setPixel(bufferedImage.getRGB(x, y), x);
+                        Color color = new Color(bufferedImage.getRGB(x, y));
+                        int min = Math.min(Math.min(color.getRed(), color.getBlue()), color.getGreen());
+                        int max = Math.max(Math.max(color.getRed(), color.getBlue()), color.getGreen());
+                        int avg = (color.getRed() + color.getBlue() + color.getGreen()) / 3;
+
+                        if (Math.abs(min - max) < 10 && Math.abs(avg - min) < 10 && min > 220) {
+                            color = new Color((int) (color.getRed() * 0.8), (int) (color.getGreen() * 0.8),
+                                    (int) (color.getBlue() * 0.8));
+
+                        }
+
+                        if (Math.abs(min - max) < 10 && Math.abs(avg - min) < 10 && min > 190 && min < 220) {
+                            color = new Color((int) (color.getRed() * 0.85), (int) (color.getGreen() * 0.85),
+                                    (int) (color.getBlue() * 0.85));
+
+                        }
+
+                        strip.setPixel(color.getRGB(), x);
                     }
                 }
             }
@@ -120,7 +137,7 @@ public class PixelpusherPlugin implements Plugin, HasDevices {
         }
 
         @Override
-        public rx.Observable<Bool> triggerButton() {
+        public rx.Observable<Boolean> triggerButton() {
             return null;
         }
 

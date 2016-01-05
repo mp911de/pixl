@@ -11,8 +11,8 @@ import java.awt.image.BufferedImage;
  */
 public class ValueRenderer {
 
-    public static final Color TEXT_COLOR = Color.lightGray;
-    public static final Color PROGRESS_BG_COLOR = Color.darkGray;
+    public static final Color TEXT_COLOR = Color.WHITE;
+    public static final Color PROGRESS_BG_COLOR = Color.LIGHT_GRAY;
     private final BitmapFont font;
 
     public ValueRenderer(BitmapFont font) {
