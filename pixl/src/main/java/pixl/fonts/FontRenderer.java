@@ -34,7 +34,7 @@ public class FontRenderer {
      * @param g
      */
     public static void drawString(BitmapFont font, int x, int y, String text, Graphics g) {
-        char[] chars = text.toCharArray();
+        char[] chars = text.toUpperCase().toCharArray();
         int currentX = x;
         for (int i = 0; i < chars.length; i++) {
 
