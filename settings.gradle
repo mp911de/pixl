@@ -7,5 +7,6 @@ include 'plugins/default-applications'
 include 'plugins/github'
 include 'plugins/google-mail'
 include 'plugins/twitter'
+include 'plugins/travis-ci'
 include 'pixl'
 
