@@ -9,6 +9,7 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.util.concurrent.ListenableFuture;
 import org.springframework.web.client.AsyncRestTemplate;
@@ -29,7 +30,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * @author <a href="mailto:mpaluch@paluch.biz">Mark Paluch</a>
  */
-@org.springframework.stereotype.Component
+@Component
 public class TravisCiSummary implements SingleValueApplicationSupport {
 
     public final static Color IN_PROGRESS = hex2Rgb("#E5DC29");
@@ -57,109 +58,133 @@ public class TravisCiSummary implements SingleValueApplicationSupport {
     public Value<?> getValue(Map<String, Object> configuration) {
         if (configuration.get("repositories") instanceof Collection) {
             List<String> repositories = (List) configuration.get("repositories");
-
-            Stream<Tuple2<String, ListenableFuture<ResponseEntity<List<TravisCiBuild>>>>> map = Stream
-                    .ofAll(repositories).take(8).filter(repo -> cache.getIfPresent(repo) == null).map(
-                            repo -> {
-                                UriComponents uriComponents = UriComponentsBuilder.fromUriString(API_BASE_URL)
-                                        .path("repos/")
-                                        .path(repo)
-                                        .path("/builds").build();
-
-                                HttpEntity httpEntity;
-                                if (StringUtils.hasText(token)) {
-                                    org.springframework.http.HttpHeaders httpHeaders = new org.springframework.http.HttpHeaders();
-                                    httpHeaders.add(HttpHeaders.AUTHORIZATION, "token \"" + token + "\"");
-
-                                    httpEntity = new HttpEntity<>(null, httpHeaders);
-                                } else {
-                                    httpEntity = HttpEntity.EMPTY;
-                                }
-
-                                ListenableFuture<ResponseEntity<List<TravisCiBuild>>> exchange = asyncRestTemplate
-                                        .exchange(uriComponents.toUri(), HttpMethod.GET,
-                                                httpEntity, new ParameterizedTypeReference<List<TravisCiBuild>>() {
-
-                                                });
-
-                                return new Tuple2<>(repo, exchange);
-                            }
-                    );
-
-            List<Tuple2<String, List<TravisCiBuild>>> results = map
-                    .filter(t -> unchecked(t._2).getStatusCode().is2xxSuccessful())
-                    .map(t -> new Tuple2<>(t._1, unchecked(t._2).getBody())).toJavaList();
-
-            for (int i = 0; i < results.size(); i++) {
-                Tuple2<String, List<TravisCiBuild>> tuple = results.get(i);
-                cache.put(tuple._1, tuple._2);
-            }
+            retrieveData(repositories);
 
             BufferedImage icon = new BufferedImage(8, 8, BufferedImage.TYPE_INT_RGB);
 
             int success = 0;
             int failed = 0;
             int inProgress = 0;
-            int pixelWidth = 1;
-            int pixelHeight = 1;
-
-            if (repositories.size() == 4) {
-                pixelWidth = 2;
-                pixelHeight = 2;
-            }
-
-            if (repositories.size() == 2) {
-                pixelWidth = 4;
-                pixelHeight = 2;
-            }
+            drawIcon(repositories, icon);
 
             for (int x = 0; x < repositories.size(); x++) {
                 List<TravisCiBuild> builds = cache.getIfPresent(repositories.get(x));
-                if (builds == null) {
+                if (builds == null || builds.isEmpty()) {
                     continue;
                 }
 
-                for (int y = 0; y < 8 / pixelHeight; y++) {
-                    TravisCiBuild build = null;
-                    if (builds.size() > y) {
-                        build = builds.get(y);
+                TravisCiBuild build = builds.get(0);
+
+                if ("started".equals(build.state)) {
+                    inProgress++;
+                }
+
+                if ("finished".equals(build.state)) {
+
+                    if (build.result != null && build.result.intValue() == 0) {
+                        success++;
+                    } else {
+                        failed++;
                     }
-
-                    int color = UNKNOWN.getRGB();
-                    if (build != null) {
-
-                        if ("started".equals(build.state)) {
-                            color = IN_PROGRESS.getRGB();
-                            if (y == 0) {
-                                inProgress++;
-                            }
-                        }
-
-                        if ("finished".equals(build.state)) {
-
-                            if (build.result != null && build.result.intValue() == 0) {
-                                color = SUCESS.getRGB();
-                                success++;
-                            } else {
-                                color = FAILED.getRGB();
-
-                                if (y == 0) {
-                                    failed++;
-                                }
-                            }
-                        }
-                    }
-                    for (int h = 0; h < pixelHeight; h++)
-                        for (int w = 0; w < pixelWidth; w++)
-                            icon.setRGB(Math.min((x * pixelWidth) + w, icon.getWidth() - 1),
-                                    Math.min((y * pixelHeight) + h, icon.getHeight() - 1), color);
                 }
             }
 
             return IconValue.of(success + " S " + inProgress + " P " + failed + " E", icon);
         }
 
-        return null;
+        return Value.of("TravisCI unconfigured");
+    }
+
+    private void drawIcon(List<String> repositories, BufferedImage icon) {
+        int pixelWidth = 1;
+        int pixelHeight = 1;
+
+        if (repositories.size() == 4) {
+            pixelWidth = 2;
+            pixelHeight = 2;
+        }
+
+        if (repositories.size() == 2) {
+            pixelWidth = 4;
+            pixelHeight = 2;
+        }
+
+        for (int x = 0; x < repositories.size(); x++) {
+            List<TravisCiBuild> builds = cache.getIfPresent(repositories.get(x));
+            if (builds == null) {
+                continue;
+            }
+
+            for (int y = 0; y < 8 / pixelHeight; y++) {
+                TravisCiBuild build = null;
+                if (builds.size() > y) {
+                    build = builds.get(y);
+                }
+
+                int color = UNKNOWN.getRGB();
+                if (build != null) {
+
+                    if ("started".equals(build.state)) {
+                        color = IN_PROGRESS.getRGB();
+                    }
+
+                    if ("finished".equals(build.state)) {
+
+                        if (build.result != null && build.result.intValue() == 0) {
+                            color = SUCESS.getRGB();
+                        } else {
+                            color = FAILED.getRGB();
+                        }
+                    }
+                }
+                for (int h = 0; h < pixelHeight; h++)
+                    for (int w = 0; w < pixelWidth; w++)
+                        icon.setRGB(Math.min((x * pixelWidth) + w, icon.getWidth() - 1),
+                                Math.min((y * pixelHeight) + h, icon.getHeight() - 1), color);
+            }
+        }
+    }
+
+    private void retrieveData(List<String> repositories) {
+        Stream<Tuple2<String, ListenableFuture<ResponseEntity<List<TravisCiBuild>>>>> map = Stream
+                .ofAll(repositories).take(8).filter(repo -> cache.getIfPresent(repo) == null).map(
+                        repo -> {
+                            ListenableFuture<ResponseEntity<List<TravisCiBuild>>> exchange = requestData(repo);
+                            return new Tuple2<>(repo, exchange);
+                        }
+                );
+
+        List<Tuple2<String, List<TravisCiBuild>>> results = map
+                .filter(t -> unchecked(t._2).getStatusCode().is2xxSuccessful())
+                .map(t -> new Tuple2<>(t._1, unchecked(t._2).getBody())).toJavaList();
+
+        for (int i = 0; i < results.size(); i++) {
+            Tuple2<String, List<TravisCiBuild>> tuple = results.get(i);
+            cache.put(tuple._1, tuple._2);
+        }
+    }
+
+    private ListenableFuture<ResponseEntity<List<TravisCiBuild>>> requestData(String repo) {
+        UriComponents uriComponents = UriComponentsBuilder.fromUriString(API_BASE_URL)
+                .path("repos/")
+                .path(repo)
+                .path("/builds").build();
+
+        HttpEntity httpEntity;
+        if (StringUtils.hasText(token)) {
+            org.springframework.http.HttpHeaders httpHeaders = new org.springframework.http.HttpHeaders();
+            httpHeaders.add(HttpHeaders.AUTHORIZATION, "token \"" + token + "\"");
+
+            httpEntity = new HttpEntity<>(null, httpHeaders);
+        } else {
+            httpEntity = HttpEntity.EMPTY;
+        }
+
+        return asyncRestTemplate
+                .exchange(uriComponents.toUri(), HttpMethod.GET,
+                        httpEntity, new ParameterizedTypeReference<List<TravisCiBuild>>() {
+
+                        });
     }
 
     private ResponseEntity<List<TravisCiBuild>> unchecked(

@@ -1,7 +1,7 @@
 dependencies {
-    compile project(':api')
+    compile project(":api")
     compile("org.springframework:spring-context:${springVersion}")
     compile("org.springframework:spring-web:${springVersion}")
     compile("javax.inject:javax.inject:1")
-    compile 'com.fasterxml.jackson.core:jackson-databind:2.6.4'
+    compile("com.fasterxml.jackson.core:jackson-databind:2.6.4")
 }

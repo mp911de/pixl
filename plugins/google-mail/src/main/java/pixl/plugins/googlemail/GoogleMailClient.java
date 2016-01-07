@@ -18,10 +18,14 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.ImmutableList;
 import org.springframework.stereotype.Component;
 import pixl.api.application.Application;
+import pixl.api.application.DisplayOpinion;
 import pixl.api.application.HasApplications;
 import pixl.api.application.data.Value;
+import pixl.api.application.support.SingleApplicationSupport;
+import pixl.api.application.support.SingleValueApplicationSupport;
 import pixl.api.plugin.Plugin;
 
+import javax.inject.Inject;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -37,7 +41,8 @@ import java.util.concurrent.TimeUnit;
  * @author <a href="mailto:mpaluch@paluch.biz">Mark Paluch</a>
  */
 @Component
-public class GoogleMailClient implements Application, HasApplications, Plugin {
+public class GoogleMailClient implements SingleApplicationSupport, SingleValueApplicationSupport, Plugin, DisplayOpinion {
+
 
     private static NetHttpTransport HTTP_TRANSPORT;
 
@@ -65,10 +70,12 @@ public class GoogleMailClient implements Application, HasApplications, Plugin {
         }
     }
 
+
     @Override
-    public Collection<Application> getApplications() {
-        return ImmutableList.of((Application) this);
+    public Application getApplication() {
+        return this;
     }
+
 
     /**
      * Creates an authorized Credential object.
@@ -102,8 +109,9 @@ public class GoogleMailClient implements Application, HasApplications, Plugin {
         return "google-mail";
     }
 
+
     @Override
-    public List<Value<?>> getValues(Map<String, Object> configuration) {
+    public Value<?> getValue(Map<String, Object> configuration) {
 
         if (configuration.containsKey("secret.json")) {
             String secretJson = (String) configuration.get("secret.json");
@@ -128,11 +136,15 @@ public class GoogleMailClient implements Application, HasApplications, Plugin {
             }
 
             if (listMessagesResponse.getMessages() != null) {
-                return ImmutableList.of(new Value<>(listMessagesResponse.getMessages().size()));
-
+                return new Value<>(listMessagesResponse.getMessages().size());
             }
         }
 
-        return ImmutableList.of(new Value<>(0));
+        return new Value<>(0);
+    }
+
+    @Override
+    public boolean shouldDisplay(Map<String, Object> configuration) {
+        return !getValue(configuration).getValue().toString().equals("0");
     }
 }

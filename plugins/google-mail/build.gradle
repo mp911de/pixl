@@ -1,10 +1,12 @@
 dependencies {
-    compile project(':api')
+    compile project(":api")
+
     compile("org.springframework:spring-context:${springVersion}")
     compile("org.springframework:spring-web:${springVersion}")
     compile("javax.inject:javax.inject:1")
 
-    compile 'com.google.api-client:google-api-client:1.20.0'
-    compile 'com.google.oauth-client:google-oauth-client-jetty:1.20.0'
-    compile 'com.google.apis:google-api-services-gmail:v1-rev29-1.20.0'
+    compile("com.google.api-client:google-api-client:1.20.0")
+    compile("com.google.oauth-client:google-oauth-client-jetty:1.20.0")
+    compile("com.google.apis:google-api-services-gmail:v1-rev29-1.20.0")
+    compile("com.fasterxml.jackson.core:jackson-databind:2.6.4")
 }
