@@ -12,6 +12,7 @@ dependencies {
     compile project(':plugins/google-mail')
     compile project(':plugins/twitter')
     compile project(':plugins/travis-ci')
+    compile project(':plugins/github')
 
     compile('org.springframework.boot:spring-boot-starter-social-twitter')
     compile('org.springframework.boot:spring-boot-starter-web')

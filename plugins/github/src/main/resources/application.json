@@ -1,0 +1,23 @@
+{
+  "github-repo-stats": {
+    "frames": [
+      {
+        "icon": "github.png",
+        "type": "text",
+        "duration": "PT5S"
+      },
+      {
+        "icon": "github.png",
+        "type": "metric",
+        "suffix": " ISSUES",
+        "duration": "PT5S"
+      },
+      {
+        "icon": "github.png",
+        "type": "metric",
+        "suffix": " PULL",
+        "duration": "PT5S"
+      }
+    ]
+  }
+}

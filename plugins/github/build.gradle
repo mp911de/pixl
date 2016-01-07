@@ -1,0 +1,9 @@
+dependencies {
+    compile project(":api")
+    compile("org.springframework:spring-context:${springVersion}")
+    compile("org.springframework:spring-web:${springVersion}")
+    compile("org.springframework:spring-social-github:${springVersion}")
+    compile("javax.inject:javax.inject:1")
+
+    compile("com.fasterxml.jackson.core:jackson-databind:2.6.4")
+}
