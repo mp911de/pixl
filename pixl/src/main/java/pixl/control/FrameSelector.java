@@ -1,7 +1,9 @@
 package pixl.control;
 
-import pixl.application.ApplicationFrames;
-import pixl.application.Frame;
+import pixl.api.application.Application;
+import pixl.api.application.DisplayOpinion;
+import pixl.api.userinterface.ApplicationFrames;
+import pixl.api.userinterface.Frame;
 import pixl.application.Playlist;
 import pixl.application.PlaylistItem;
 
@@ -62,20 +64,38 @@ public class FrameSelector {
         ApplicationFrames verifyApplicationFrames = applicationRegistry
                 .getApplicationFrames(verifyPlaylistItem.getApplication());
 
-        frameIndex++;
-        if (frameIndex >= verifyApplicationFrames.getFrameCount()) {
-            frameIndex = 0;
-            switchPlaylistItem = true;
-        }
+        int localFrameIndex = frameIndex;
+        int localPlaylistIndex = playlistIndex;
 
-        if (switchPlaylistItem) {
-            playlistIndex++;
-
-            if (playlistIndex >= playlist.size()) {
-                playlistIndex = 0;
-                frameIndex = 0;
+        for (int i = 0; i < 5; i++) {
+            localFrameIndex++;
+            if (localFrameIndex >= verifyApplicationFrames.getFrameCount()) {
+                localFrameIndex = 0;
+                switchPlaylistItem = true;
             }
+
+            if (switchPlaylistItem) {
+                localPlaylistIndex++;
+
+                if (localPlaylistIndex >= playlist.size()) {
+                    localPlaylistIndex = 0;
+                    localFrameIndex = 0;
+                }
+            }
+
+            PlaylistItem playlistItem = playlist.getItem(localPlaylistIndex);
+            Application application = applicationRegistry.getApplication(playlistItem.getApplication());
+
+            if (application instanceof DisplayOpinion) {
+                if (!((DisplayOpinion) application).shouldDisplay(playlistItem.getConfiguration())) {
+                    continue;
+                }
+            }
+            break;
         }
+
+        frameIndex = localFrameIndex;
+        playlistIndex = localPlaylistIndex;
 
         ApplicationFrames applicationFrames = applicationRegistry
                 .getApplicationFrames(verifyPlaylistItem.getApplication());
