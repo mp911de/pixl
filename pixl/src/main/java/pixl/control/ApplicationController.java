@@ -1,6 +1,8 @@
 package pixl.control;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.TaskScheduler;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Component;
 import pixl.application.Configuration;
 import pixl.fonts.BitmapFont;
@@ -11,6 +13,8 @@ import pixl.output.OutputMultiplexer;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
 import javax.inject.Inject;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author <a href="mailto:mpaluch@paluch.biz">Mark Paluch</a>
@@ -32,7 +36,15 @@ public class ApplicationController {
     private OutputMultiplexer outputMultiplexer;
 
     private ApplicationActorJob job;
+    private ApplicationValueRefresher applicationValueRefresher;
     private Thread thread;
+    private ScheduledFuture<?> scheduledFuture;
+
+    @Inject
+    private TaskScheduler scheduler;
+
+    @Inject
+    private ThreadPoolTaskExecutor executor;
 
     @PostConstruct
     public void postConstruct() throws Exception {
@@ -43,6 +55,12 @@ public class ApplicationController {
         job = new ApplicationActorJob(playlistRegistry.getPlaylist(), applicationRegistry, configuration, font,
                 outputMultiplexer);
 
+        applicationValueRefresher = new ApplicationValueRefresher(executor, playlistRegistry.getPlaylist(),
+                applicationRegistry);
+
+        scheduledFuture = scheduler.scheduleAtFixedRate(applicationValueRefresher, TimeUnit.SECONDS.toMillis(60));
+
+        int sleep = 1000 / configuration.getFramerate();
         thread = new Thread(new Runnable() {
             @Override
             public void run() {
@@ -50,11 +68,10 @@ public class ApplicationController {
                 while (true) {
                     try {
                         job.act();
-                        Thread.sleep(100);
+                        Thread.sleep(sleep);
                     } catch (InterruptedException e) {
                         return;
-                    }catch (Exception e) {
-                        e.printStackTrace();
+                    } catch (Exception e) {
                         log.error(e.toString(), e);
                     }
                 }
@@ -68,6 +85,13 @@ public class ApplicationController {
     public void preDestroy() {
         if (thread != null) {
             thread.interrupt();
+            thread = null;
+        }
+        if (scheduledFuture != null) {
+            if (!scheduledFuture.isCancelled()) {
+                scheduledFuture.cancel(false);
+            }
+            scheduledFuture = null;
         }
     }
 
