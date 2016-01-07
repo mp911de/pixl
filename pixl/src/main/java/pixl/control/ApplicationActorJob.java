@@ -6,10 +6,11 @@ import com.google.common.cache.LoadingCache;
 import org.apache.commons.lang3.LocaleUtils;
 import org.apache.commons.lang3.StringUtils;
 import pixl.api.application.Application;
+import pixl.api.application.DisplayOpinion;
 import pixl.api.application.data.Value;
 import pixl.api.delivery.Device;
+import pixl.api.userinterface.Frame;
 import pixl.application.Configuration;
-import pixl.application.Frame;
 import pixl.application.Playlist;
 import pixl.application.PlaylistItem;
 import pixl.fonts.BitmapFont;
@@ -105,7 +106,6 @@ public class ApplicationActorJob {
 
         boolean switchFrame = false;
 
-
         if (playlistItemSince != 0 && frameSince != 0 && transitionSince == 0 && !frameController
                 .isInFrameAnimation()) {
             long applicationDuration = now() - playlistItemSince;
@@ -113,7 +113,7 @@ public class ApplicationActorJob {
             switchFrame = frameSelector.frameSwitchNeeded(applicationDuration, frameDuration);
         }
 
-        if(frameChangeRequested){
+        if (frameChangeRequested) {
             frameChangeRequested = false;
             switchFrame = true;
         }
@@ -146,7 +146,6 @@ public class ApplicationActorJob {
                             currentPlaylistItem.getConfiguration());
             refresh = false;
         }
-
 
         Graphics graphics = surface.getGraphics();
         graphics.setColor(Color.BLACK);

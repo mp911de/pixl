@@ -10,6 +10,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class Configuration {
     private String locale;
+    private int framerate = 50;
+    private int workerThreads = 4;
 
     public String getLocale() {
         return locale;
@@ -17,5 +19,21 @@ public class Configuration {
 
     public void setLocale(String locale) {
         this.locale = locale;
+    }
+
+    public int getFramerate() {
+        return framerate;
+    }
+
+    public void setFramerate(int framerate) {
+        this.framerate = framerate;
+    }
+
+    public int getWorkerThreads() {
+        return workerThreads;
+    }
+
+    public void setWorkerThreads(int workerThreads) {
+        this.workerThreads = workerThreads;
     }
 }

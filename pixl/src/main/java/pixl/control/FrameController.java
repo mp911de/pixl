@@ -6,8 +6,8 @@ import pixl.api.application.Application;
 import pixl.api.application.data.IconValue;
 import pixl.api.application.data.Progress;
 import pixl.api.application.data.Value;
-import pixl.application.Frame;
-import pixl.application.FrameType;
+import pixl.api.userinterface.Frame;
+import pixl.api.userinterface.FrameType;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -61,7 +61,7 @@ public class FrameController {
         Value<?> value = values.get(valueIndex);
         if (frame.getFrameType() == FrameType.METRIC || frame.getFrameType() == FrameType.PROGRESS || frame
                 .getFrameType() == FrameType.TEXT) {
-            String text = getText(frame, locale, value);
+            String text = getText(frame, locale, value).toUpperCase(locale);
             textImage = valueRenderer.renderText(text, surfaceHeight);
         }
 

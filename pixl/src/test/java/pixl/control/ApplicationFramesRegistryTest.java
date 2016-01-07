@@ -3,7 +3,7 @@ package pixl.control;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.core.io.DefaultResourceLoader;
-import pixl.application.ApplicationFrames;
+import pixl.api.userinterface.ApplicationFrames;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

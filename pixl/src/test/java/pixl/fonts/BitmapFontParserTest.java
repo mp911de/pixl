@@ -16,5 +16,7 @@ public class BitmapFontParserTest {
 
         assertThat(font.getGlyph('q')).isNotNull();
         assertThat(font.getGlyph('(')).isNotNull();
+
+        assertThat(font.getGlyph('M').getWidth()).isEqualTo(5);
     }
 }

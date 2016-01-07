@@ -5,7 +5,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import pixl.api.application.Application;
-import pixl.application.ApplicationFrames;
+import pixl.api.userinterface.ApplicationFrames;
 import pixl.application.Playlist;
 import pixl.application.PlaylistItem;
 

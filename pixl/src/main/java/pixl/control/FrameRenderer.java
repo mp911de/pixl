@@ -1,7 +1,7 @@
 package pixl.control;
 
-import pixl.application.Frame;
-import pixl.application.FrameType;
+import pixl.api.userinterface.Frame;
+import pixl.api.userinterface.FrameType;
 
 import java.awt.*;
 
@@ -79,13 +79,17 @@ public class FrameRenderer {
                 if (ms > displayLengthMs) {
 
                     if (ms > (displayLengthMs + scrollDuration)) {
+                        double lastPhaseDuration = ms - (scrollDuration + displayLengthMs);
+                        if (lastPhaseDuration > (displayLengthMs * 0.8)) {
+                            inFrameAnimation = false;
+                        }
+
                         ms = displayLengthMs + scrollDuration;
-                        inFrameAnimation = false;
                     }
 
-                    int scrollOffsetX = (int) (((ms - displayLengthMs) / scrollDuration) * overflow);
-                    graphics.drawImage(textImage, x, y, width, y + height, x + scrollOffsetX, 0,
-                            x + scrollOffsetX + availableWidth, textImage.getHeight(null), null);
+                    int scrollOffsetX = (int) Math.round(((ms - displayLengthMs) / scrollDuration) * overflow);
+                    graphics.drawImage(textImage, x, y, width, y + height, scrollOffsetX, 0,
+                            scrollOffsetX + availableWidth, textImage.getHeight(null), null);
 
                 } else {
                     graphics.drawImage(textImage, x, y, null);
