@@ -9,6 +9,10 @@ import java.util.Map;
  * @author <a href="mailto:mpaluch@paluch.biz">Mark Paluch</a>
  */
 public interface Application {
+
+    /**
+     * @return the application Id.
+     */
     String getId();
 
     /**
