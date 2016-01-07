@@ -1,4 +1,4 @@
-package pixl.application;
+package pixl.api.userinterface;
 
 import lombok.Data;
 

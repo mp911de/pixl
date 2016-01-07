@@ -1,4 +1,4 @@
-package pixl.application;
+package pixl.api.userinterface;
 
 import com.google.common.collect.Maps;
 import lombok.Data;
