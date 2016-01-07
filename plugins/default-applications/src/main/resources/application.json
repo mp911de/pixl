@@ -6,7 +6,14 @@
         "formatPattern": {
           "de": "HH:mm:ss"
         },
-        "getValueOnRepaint":true
+        "getValueOnRepaint": true
+      }
+    ]
+  },
+  "text": {
+    "frames": [
+      {
+        "type": "text"
       }
     ]
   },
@@ -15,7 +22,7 @@
       {
         "type": "progress",
         "formatPattern": "##",
-        "getValueOnRepaint":true
+        "getValueOnRepaint": true
       }
     ]
   },

@@ -29,6 +29,8 @@ public class DefaultApplications implements Plugin, HasApplications {
         applications.add(new TimeApplication());
         applications.add(new MinuteProgressApplication());
         applications.add(weather);
+        applications.add(new TextApplication());
+        applications.add(new Text2Application());
         return applications;
     }
 }
